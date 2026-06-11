@@ -53,3 +53,5 @@ Then open: http://localhost:3000
 - **Backend**: Node.js + Express
 - **Database**: SQLite (via better-sqlite3)
 - **File Uploads**: Multer
+
+<!-- commit iteration 1 -->
