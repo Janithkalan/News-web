@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DailyNews - Your Trusted News Source</title>
+  <meta name="description" content="Stay informed with the latest breaking news, politics, sports, technology, and entertainment from DailyNews." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="top-bar">
+      <span id="current-date">Loading date...</span>
+      <span>📞 +1 (555) 123-4567 &nbsp;|&nbsp; 📧 news@dailynews.com</span>
+    </div>
+    <div class="logo-area">
+      <h1>📰 DailyNews</h1>
+      <p>Truth. Speed. Trust.</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/" class="active">Home</a></li>
+        <li><a href="/news">News</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/admin">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- BREAKING NEWS TICKER -->
+  <div class="ticker-wrap">
+    <span class="ticker-label">BREAKING</span>
+    <span class="ticker-text" id="ticker-text">Loading latest news...</span>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="container">
+      <div class="home-grid">
+
+        <!-- LEFT: MAIN ARTICLES -->
+        <div>
+          <p class="section-title">Featured Stories</p>
+          <div id="featured-container">
+            <div class="loading">Loading featured articles...</div>
+          </div>
+
+          <p class="section-title" style="margin-top: 30px;">Latest News</p>
+          <div id="latest-container">
+            <div class="loading">Loading latest news...</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: SIDEBAR -->
+        <div class="sidebar">
+          <div class="sidebar-widget">
+            <div class="widget-title">📂 Categories</div>
+            <div class="widget-body">
+              <ul class="category-list" id="category-list">
+                <li>Loading...</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sidebar-widget">
+            <div class="widget-title">🔥 Trending Today</div>
+            <div class="widget-body" id="trending-container">
+              <div class="loading">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>📰 DailyNews</h4>
+          <p>Your most trusted source for breaking news, analysis, and in-depth reporting from around the world.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/news">News</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Info</h4>
+          <p>📍 123 News Street, Media City</p>
+          <p>📞 +1 (555) 123-4567</p>
+          <p>📧 news@dailynews.com</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 DailyNews. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Show current date
+    const d = new Date();
+    document.getElementById('current-date').textContent = d.toDateString();
+
+    // Load featured articles
+    async function loadFeatured() {
+      try {
+        const res = await fetch('/api/articles?featured=1');
+        const articles = await res.json();
+        const container = document.getElementById('featured-container');
+        if (articles.length === 0) { container.innerHTML = '<p>No featured articles found.</p>'; return; }
+        
+        const first = articles[0];
+        container.innerHTML = `
+          <div class="featured-article" onclick="window.location='/article?id=${first.id}'" style="cursor:pointer">
+            <img src="/uploads/${first.image}" onerror="this.src='https://via.placeholder.com/800x340/1a1a2e/ffffff?text=DailyNews'" alt="${first.title}">
+            <div class="article-body">
+              <div class="meta">
+                <span class="category-badge">${first.category}</span>
+                <span class="meta-author">✍️ ${first.author}</span>
+                <span class="meta-date">🕒 ${new Date(first.published_at).toLocaleDateString()}</span>
+              </div>
+              <h2>${first.title}</h2>
+              <p>${first.content.substring(0, 200)}...</p>
+            </div>
+          </div>
+        `;
+      } catch(e) { document.getElementById('featured-container').innerHTML = '<p>Error loading articles.</p>'; }
+    }
+
+    // Load latest articles
+    async function loadLatest() {
+      try {
+        const res = await fetch('/api/articles');
+        const articles = await res.json();
+        const container = document.getElementById('latest-container');
+        if (articles.length === 0) { container.innerHTML = '<p>No articles found.</p>'; return; }
+        
+        container.innerHTML = articles.slice(0, 6).map(a => `
+          <div class="article-card" onclick="window.location='/article?id=${a.id}'" style="cursor:pointer">
+            <img src="/uploads/${a.image}" onerror="this.src='https://via.placeholder.com/130x95/1a1a2e/ffffff?text=News'" alt="${a.title}">
+            <div class="card-body">
+              <div class="meta">
+                <span class="category-badge">${a.category}</span>
+                <span class="meta-date">${new Date(a.published_at).toLocaleDateString()}</span>
+              </div>
+              <h3>${a.title}</h3>
+              <p>${a.content.substring(0, 100)}...</p>
+            </div>
+          </div>
+        `).join('');
+      } catch(e) { document.getElementById('latest-container').innerHTML = '<p>Error loading articles.</p>'; }
+    }
+
+    // Load categories for sidebar
+    async function loadCategories() {
+      try {
+        const res = await fetch('/api/articles');
+        const articles = await res.json();
+        const catCount = {};
+        articles.forEach(a => { catCount[a.category] = (catCount[a.category] || 0) + 1; });
+
+        const list = document.getElementById('category-list');
+        list.innerHTML = Object.entries(catCount).map(([cat, count]) => `
+          <li>
+            <a href="/news?category=${cat}">${cat}</a>
+            <span class="count">${count}</span>
+          </li>
+        `).join('');
+      } catch(e) { }
+    }
+
+    // Load trending sidebar
+    async function loadTrending() {
+      try {
+        const res = await fetch('/api/articles');
+        const articles = await res.json();
+        const container = document.getElementById('trending-container');
+        container.innerHTML = articles.slice(0, 4).map((a, i) => `
+          <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #f0f0f0;">
+            <span style="font-size:22px;color:#c0392b;font-weight:bold;font-family:Arial;">${i+1}</span>
+            <a href="/article?id=${a.id}" style="font-size:13px;color:#222;line-height:1.4;">${a.title}</a>
+          </div>
+        `).join('');
+      } catch(e) { }
+    }
+
+    // Ticker from articles
+    async function loadTicker() {
+      try {
+        const res = await fetch('/api/articles');
+        const articles = await res.json();
+        if (articles.length) {
+          document.getElementById('ticker-text').textContent = articles.map(a => '🔴 ' + a.title).join('    ••    ');
+        }
+      } catch(e) { }
+    }
+
+    loadFeatured();
+    loadLatest();
+    loadCategories();
+    loadTrending();
+    loadTicker();
+  </script>
+</body>
+</html>

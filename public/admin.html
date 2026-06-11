@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - DailyNews</title>
+  <meta name="description" content="DailyNews administration panel for managing articles and messages." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="top-bar">
+      <span>DailyNews Admin Panel</span>
+      <span id="admin-user-label"></span>
+    </div>
+    <div class="logo-area">
+      <h1>📰 DailyNews</h1>
+      <p>Administration Panel</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/news">News</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/admin" class="active">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ============================
+       LOGIN SECTION (shown first)
+  ============================= -->
+  <div id="login-section">
+    <main>
+      <div class="container">
+        <div class="login-wrap">
+          <div class="login-box">
+            <h2>🔒 Admin Login</h2>
+            <div id="login-alert" class="alert"></div>
+            <form id="login-form">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username" required />
+              </div>
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password" required />
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%;">Login →</button>
+              <p style="margin-top:15px;font-size:12px;color:#888;text-align:center;font-family:Arial;">Default: admin / admin123</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================
+       ADMIN PANEL (shown after login)
+  ============================= -->
+  <div id="admin-section" style="display:none;">
+    <div class="container">
+      <div class="admin-layout">
+
+        <!-- SIDEBAR MENU -->
+        <div class="admin-sidebar">
+          <h3>⚙️ Admin Menu</h3>
+          <ul class="admin-menu">
+            <li><a href="#" class="active" id="menu-dashboard" onclick="showTab('dashboard', this)">📊 Dashboard</a></li>
+            <li><a href="#" id="menu-articles" onclick="showTab('articles', this)">📰 Manage Articles</a></li>
+            <li><a href="#" id="menu-messages" onclick="showTab('messages', this)">✉️ Messages</a></li>
+            <li><a href="#" onclick="logout()" style="color:#e74c3c;">🚪 Logout</a></li>
+          </ul>
+        </div>
+
+        <!-- MAIN ADMIN CONTENT -->
+        <div class="admin-content">
+
+          <!-- DASHBOARD TAB -->
+          <div id="tab-dashboard">
+            <h2 class="section-title">Dashboard Overview</h2>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <h2 id="stat-articles">--</h2>
+                <p>Total Articles</p>
+              </div>
+              <div class="stat-card" style="border-top-color:#f39c12;">
+                <h2 id="stat-messages" style="color:#f39c12;">--</h2>
+                <p>Total Messages</p>
+              </div>
+              <div class="stat-card" style="border-top-color:#e74c3c;">
+                <h2 id="stat-unread" style="color:#e74c3c;">--</h2>
+                <p>Unread Messages</p>
+              </div>
+            </div>
+
+            <div class="admin-table-wrap">
+              <div class="admin-table-header">
+                <h3>📂 Articles by Category</h3>
+              </div>
+              <table>
+                <thead><tr><th>Category</th><th>Article Count</th></tr></thead>
+                <tbody id="stats-category-table"><tr><td colspan="2">Loading...</td></tr></tbody>
+              </table>
+            </div>
+
+            <div style="background:white;padding:20px;border-radius:4px;box-shadow:0 1px 5px rgba(0,0,0,0.08);">
+              <h3 style="margin-bottom:12px;color:#1a1a2e;">Quick Actions</h3>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="showTab('articles', document.getElementById('menu-articles')); openAddModal()">+ Add New Article</button>
+                <button class="btn btn-secondary" onclick="showTab('messages', document.getElementById('menu-messages'))">View Messages</button>
+                <a href="/" target="_blank" class="btn" style="background:#27ae60;color:white;">🌐 View Website</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ARTICLES TAB -->
+          <div id="tab-articles" style="display:none;">
+            <h2 class="section-title">Manage Articles</h2>
+            <div id="article-alert" class="alert"></div>
+
+            <div class="admin-table-wrap">
+              <div class="admin-table-header">
+                <h3>All Articles</h3>
+                <button class="btn btn-primary btn-small" onclick="openAddModal()">+ Add New Article</button>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th>Featured</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="articles-table">
+                  <tr><td colspan="7" class="loading">Loading articles...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- MESSAGES TAB -->
+          <div id="tab-messages" style="display:none;">
+            <h2 class="section-title">Contact Messages</h2>
+            <div id="msg-alert" class="alert"></div>
+
+            <div class="admin-table-wrap">
+              <div class="admin-table-header">
+                <h3>All Messages</h3>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="messages-table">
+                  <tr><td colspan="7" class="loading">Loading messages...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div> <!-- end admin-content -->
+      </div> <!-- end admin-layout -->
+    </div> <!-- end container -->
+  </div> <!-- end admin-section -->
+
+
+  <!-- =============================
+       ADD / EDIT ARTICLE MODAL
+  ============================== -->
+  <div class="modal-overlay" id="article-modal">
+    <div class="modal">
+      <h3 id="modal-title">Add New Article</h3>
+      <div id="modal-alert" class="alert"></div>
+      <form id="article-form" enctype="multipart/form-data">
+        <input type="hidden" id="article-id" />
+        <div class="form-group">
+          <label for="art-title">Title *</label>
+          <input type="text" id="art-title" placeholder="Article headline" required />
+        </div>
+        <div class="form-group">
+          <label for="art-category">Category *</label>
+          <select id="art-category" required>
+            <option value="">-- Select Category --</option>
+            <option>Politics</option>
+            <option>Sports</option>
+            <option>Technology</option>
+            <option>Business</option>
+            <option>Entertainment</option>
+            <option>Health</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="art-author">Author *</label>
+          <input type="text" id="art-author" placeholder="Reporter name" required />
+        </div>
+        <div class="form-group">
+          <label for="art-content">Content *</label>
+          <textarea id="art-content" style="height:150px;" placeholder="Full article content..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="art-image">Image (optional)</label>
+          <input type="file" id="art-image" accept="image/*" />
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="art-featured" style="width:auto;margin-right:8px;" />
+            Mark as Featured Article
+          </label>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:10px;">
+          <button type="submit" class="btn btn-primary" id="save-btn">💾 Save Article</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MESSAGE VIEW MODAL -->
+  <div class="modal-overlay" id="message-modal">
+    <div class="modal">
+      <h3>Message Details</h3>
+      <div id="msg-detail"></div>
+      <div style="margin-top:20px;">
+        <button class="btn btn-secondary" onclick="closeMessageModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // ==================
+    //  AUTH
+    // ==================
+    let loggedInUser = null;
+
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const alert = document.getElementById('login-alert');
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loggedInUser = data.username;
+          document.getElementById('login-section').style.display = 'none';
+          document.getElementById('admin-section').style.display = 'block';
+          document.getElementById('admin-user-label').textContent = '👤 Logged in as: ' + loggedInUser;
+          loadDashboard();
+          loadArticlesTable();
+          loadMessagesTable();
+        } else {
+          alert.className = 'alert alert-error show';
+          alert.textContent = '❌ ' + data.error;
+        }
+      } catch(err) {
+        alert.className = 'alert alert-error show';
+        alert.textContent = '❌ Server error. Please try again.';
+      }
+    });
+
+    function logout() {
+      loggedInUser = null;
+      document.getElementById('admin-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    // ==================
+    //  TABS
+    // ==================
+    function showTab(tabName, clickedLink) {
+      ['dashboard','articles','messages'].forEach(t => {
+        document.getElementById('tab-' + t).style.display = 'none';
+      });
+      document.querySelectorAll('.admin-menu a').forEach(a => a.classList.remove('active'));
+      document.getElementById('tab-' + tabName).style.display = 'block';
+      if (clickedLink) clickedLink.classList.add('active');
+    }
+
+    // ==================
+    //  DASHBOARD
+    // ==================
+    async function loadDashboard() {
+      try {
+        const res = await fetch('/api/stats');
+        const stats = await res.json();
+        document.getElementById('stat-articles').textContent = stats.totalArticles;
+        document.getElementById('stat-messages').textContent = stats.totalMessages;
+        document.getElementById('stat-unread').textContent = stats.unreadMessages;
+        document.getElementById('stats-category-table').innerHTML = stats.categories.map(c => `
+          <tr><td>${c.category}</td><td>${c.cnt}</td></tr>
+        `).join('');
+      } catch(e) { console.error(e); }
+    }
+
+    // ==================
+    //  ARTICLES TABLE
+    // ==================
+    async function loadArticlesTable() {
+      try {
+        const res = await fetch('/api/articles');
+        const articles = await res.json();
+        const tbody = document.getElementById('articles-table');
+        if (articles.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#888;padding:20px;">No articles yet. Add one!</td></tr>';
+          return;
+        }
+        tbody.innerHTML = articles.map(a => `
+          <tr>
+            <td>${a.id}</td>
+            <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.title}">${a.title}</td>
+            <td><span class="category-badge">${a.category}</span></td>
+            <td>${a.author}</td>
+            <td>${new Date(a.published_at).toLocaleDateString()}</td>
+            <td>${a.is_featured ? '<span style="color:#27ae60;font-weight:bold;">✔ Yes</span>' : '<span style="color:#aaa;">No</span>'}</td>
+            <td>
+              <div class="actions">
+                <button class="btn btn-secondary btn-small" onclick="openEditModal(${a.id})">✏️ Edit</button>
+                <button class="btn btn-danger btn-small" onclick="deleteArticle(${a.id}, '${a.title.replace(/'/g,"\\'")}')">🗑️ Delete</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } catch(e) { document.getElementById('articles-table').innerHTML = '<tr><td colspan="7">Error loading articles.</td></tr>'; }
+    }
+
+    // ==================
+    //  ADD/EDIT MODAL
+    // ==================
+    function openAddModal() {
+      document.getElementById('modal-title').textContent = 'Add New Article';
+      document.getElementById('article-form').reset();
+      document.getElementById('article-id').value = '';
+      document.getElementById('save-btn').textContent = '💾 Save Article';
+      document.getElementById('modal-alert').className = 'alert';
+      document.getElementById('article-modal').classList.add('show');
+    }
+
+    async function openEditModal(id) {
+      try {
+        const res = await fetch(`/api/articles/${id}`);
+        const a = await res.json();
+        document.getElementById('modal-title').textContent = 'Edit Article';
+        document.getElementById('article-id').value = a.id;
+        document.getElementById('art-title').value = a.title;
+        document.getElementById('art-category').value = a.category;
+        document.getElementById('art-author').value = a.author;
+        document.getElementById('art-content').value = a.content;
+        document.getElementById('art-featured').checked = a.is_featured === 1;
+        document.getElementById('save-btn').textContent = '💾 Update Article';
+        document.getElementById('modal-alert').className = 'alert';
+        document.getElementById('article-modal').classList.add('show');
+      } catch(e) { alert('Error loading article data.'); }
+    }
+
+    function closeModal() {
+      document.getElementById('article-modal').classList.remove('show');
+    }
+
+    // Form submit for add/edit
+    document.getElementById('article-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('article-id').value;
+      const alert = document.getElementById('modal-alert');
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      const formData = new FormData();
+      formData.append('title', document.getElementById('art-title').value);
+      formData.append('category', document.getElementById('art-category').value);
+      formData.append('author', document.getElementById('art-author').value);
+      formData.append('content', document.getElementById('art-content').value);
+      formData.append('is_featured', document.getElementById('art-featured').checked ? 'on' : 'off');
+      const imgFile = document.getElementById('art-image').files[0];
+      if (imgFile) formData.append('image', imgFile);
+
+      try {
+        const url = id ? `/api/articles/${id}` : '/api/articles';
+        const method = id ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, body: formData });
+        const data = await res.json();
+        if (data.success) {
+          alert.className = 'alert alert-success show';
+          alert.textContent = '✅ ' + data.message;
+          loadArticlesTable();
+          loadDashboard();
+          setTimeout(() => closeModal(), 1500);
+        } else {
+          throw new Error(data.error);
+        }
+      } catch(err) {
+        alert.className = 'alert alert-error show';
+        alert.textContent = '❌ Error: ' + (err.message || 'Could not save.');
+      }
+
+      btn.disabled = false;
+      btn.textContent = id ? '💾 Update Article' : '💾 Save Article';
+    });
+
+    // ==================
+    //  DELETE ARTICLE
+    // ==================
+    async function deleteArticle(id, title) {
+      if (!confirm(`Are you sure you want to delete:\n"${title}"?\n\nThis action cannot be undone.`)) return;
+      try {
+        const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showArticleAlert('✅ Article deleted successfully.', 'success');
+          loadArticlesTable();
+          loadDashboard();
+        }
+      } catch(e) { showArticleAlert('❌ Error deleting article.', 'error'); }
+    }
+
+    function showArticleAlert(msg, type) {
+      const a = document.getElementById('article-alert');
+      a.className = `alert alert-${type} show`;
+      a.textContent = msg;
+      setTimeout(() => a.classList.remove('show'), 4000);
+    }
+
+    // ==================
+    //  MESSAGES TABLE
+    // ==================
+    async function loadMessagesTable() {
+      try {
+        const res = await fetch('/api/contacts');
+        const msgs = await res.json();
+        const tbody = document.getElementById('messages-table');
+        if (msgs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#888;padding:20px;">No messages received yet.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = msgs.map(m => `
+          <tr>
+            <td>${m.id}</td>
+            <td>${m.name}</td>
+            <td style="font-size:12px;">${m.email}</td>
+            <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.subject}</td>
+            <td>${new Date(m.received_at).toLocaleDateString()}</td>
+            <td><span class="badge ${m.is_read ? 'badge-read' : 'badge-new'}">${m.is_read ? 'Read' : 'New'}</span></td>
+            <td>
+              <div class="actions">
+                <button class="btn btn-secondary btn-small" onclick="viewMessage(${m.id}, '${m.name.replace(/'/g,"\\'")}', '${m.email}', '${m.subject.replace(/'/g,"\\'")}', '${m.message.replace(/'/g,"\\'").replace(/\n/g,' ')}', '${m.received_at}')">👁️ View</button>
+                <button class="btn btn-success btn-small" onclick="markRead(${m.id})" ${m.is_read ? 'disabled' : ''}>✔ Read</button>
+                <button class="btn btn-danger btn-small" onclick="deleteMessage(${m.id})">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } catch(e) { document.getElementById('messages-table').innerHTML = '<tr><td colspan="7">Error loading messages.</td></tr>'; }
+    }
+
+    function viewMessage(id, name, email, subject, message, date) {
+      document.getElementById('msg-detail').innerHTML = `
+        <table style="width:100%;font-family:Arial;font-size:14px;border-collapse:collapse;">
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;width:80px;color:#888;font-weight:bold;">From:</td><td style="padding:8px;">${name}</td></tr>
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;color:#888;font-weight:bold;">Email:</td><td style="padding:8px;">${email}</td></tr>
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;color:#888;font-weight:bold;">Subject:</td><td style="padding:8px;">${subject}</td></tr>
+          <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;color:#888;font-weight:bold;">Date:</td><td style="padding:8px;">${new Date(date).toLocaleString()}</td></tr>
+          <tr><td style="padding:8px;color:#888;font-weight:bold;vertical-align:top;">Message:</td><td style="padding:8px;line-height:1.7;">${message}</td></tr>
+        </table>
+      `;
+      markRead(id);
+      document.getElementById('message-modal').classList.add('show');
+    }
+
+    function closeMessageModal() {
+      document.getElementById('message-modal').classList.remove('show');
+    }
+
+    async function markRead(id) {
+      try {
+        await fetch(`/api/contacts/${id}/read`, { method: 'PUT' });
+        loadMessagesTable();
+        loadDashboard();
+      } catch(e) { }
+    }
+
+    async function deleteMessage(id) {
+      if (!confirm('Delete this message? This cannot be undone.')) return;
+      try {
+        await fetch(`/api/contacts/${id}`, { method: 'DELETE' });
+        const a = document.getElementById('msg-alert');
+        a.className = 'alert alert-success show';
+        a.textContent = '✅ Message deleted.';
+        setTimeout(() => a.classList.remove('show'), 3000);
+        loadMessagesTable();
+        loadDashboard();
+      } catch(e) { }
+    }
+
+    // Close modals on overlay click
+    document.getElementById('article-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+    document.getElementById('message-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeMessageModal();
+    });
+  </script>
+</body>
+</html>

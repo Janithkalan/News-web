@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>News - DailyNews</title>
+  <meta name="description" content="Browse all the latest news articles from DailyNews across politics, sports, technology, business, and more." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="top-bar">
+      <span id="current-date">Loading date...</span>
+      <span>📞 +1 (555) 123-4567 &nbsp;|&nbsp; 📧 news@dailynews.com</span>
+    </div>
+    <div class="logo-area">
+      <h1>📰 DailyNews</h1>
+      <p>Truth. Speed. Trust.</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/news" class="active">News</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/admin">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <h1>📰 All News Articles</h1>
+      <p>Stay up to date with the latest stories from around the world</p>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="container">
+
+      <!-- CATEGORY FILTER -->
+      <div class="filter-bar" id="filter-bar">
+        <strong style="font-family:Arial;font-size:14px;">Filter:</strong>
+        <button class="filter-btn active" onclick="filterArticles('all', this)">All</button>
+        <!-- Category buttons are added by JS -->
+      </div>
+
+      <!-- ARTICLES GRID -->
+      <div class="news-grid" id="articles-grid">
+        <div class="loading" style="grid-column:1/-1;">Loading articles...</div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>📰 DailyNews</h4>
+          <p>Your most trusted source for breaking news, analysis, and in-depth reporting from around the world.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/news">News</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Info</h4>
+          <p>📍 123 News Street, Media City</p>
+          <p>📞 +1 (555) 123-4567</p>
+          <p>📧 news@dailynews.com</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 DailyNews. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('current-date').textContent = new Date().toDateString();
+
+    let allArticles = [];
+
+    // Load all articles
+    async function loadArticles() {
+      try {
+        const res = await fetch('/api/articles');
+        allArticles = await res.json();
+        renderArticles(allArticles);
+        buildFilters(allArticles);
+
+        // Check URL param for category
+        const params = new URLSearchParams(window.location.search);
+        const cat = params.get('category');
+        if (cat) {
+          filterArticles(cat, null);
+          document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.cat === cat);
+          });
+        }
+      } catch(e) {
+        document.getElementById('articles-grid').innerHTML = '<p style="grid-column:1/-1">Error loading articles.</p>';
+      }
+    }
+
+    function renderArticles(articles) {
+      const grid = document.getElementById('articles-grid');
+      if (articles.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#888;font-family:Arial;">No articles found in this category.</p>';
+        return;
+      }
+      grid.innerHTML = articles.map(a => `
+        <div class="news-card">
+          <img src="/uploads/${a.image}" onerror="this.src='https://via.placeholder.com/400x180/1a1a2e/ffffff?text=News'" alt="${a.title}">
+          <div class="card-content">
+            <div class="meta">
+              <span class="category-badge">${a.category}</span>
+              <span class="meta-date">${new Date(a.published_at).toLocaleDateString()}</span>
+            </div>
+            <h3 onclick="window.location='/article?id=${a.id}'">${a.title}</h3>
+            <p>${a.content.substring(0, 120)}...</p>
+            <button class="read-more-btn" onclick="window.location='/article?id=${a.id}'">Read More →</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function buildFilters(articles) {
+      const cats = [...new Set(articles.map(a => a.category))];
+      const bar = document.getElementById('filter-bar');
+      cats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.textContent = cat;
+        btn.dataset.cat = cat;
+        btn.onclick = () => filterArticles(cat, btn);
+        bar.appendChild(btn);
+      });
+    }
+
+    function filterArticles(category, clickedBtn) {
+      if (clickedBtn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        clickedBtn.classList.add('active');
+      }
+      if (category === 'all') {
+        renderArticles(allArticles);
+      } else {
+        renderArticles(allArticles.filter(a => a.category === category));
+      }
+    }
+
+    loadArticles();
+  </script>
+</body>
+</html>

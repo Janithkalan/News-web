@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us - DailyNews</title>
+  <meta name="description" content="Get in touch with the DailyNews team. Send us news tips, feedback, or advertising inquiries." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="top-bar">
+      <span id="current-date">Loading date...</span>
+      <span>📞 +1 (555) 123-4567 &nbsp;|&nbsp; 📧 news@dailynews.com</span>
+    </div>
+    <div class="logo-area">
+      <h1>📰 DailyNews</h1>
+      <p>Truth. Speed. Trust.</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/news">News</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact" class="active">Contact</a></li>
+        <li><a href="/admin">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- PAGE HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <p>We'd love to hear from you — news tips, feedback, or general inquiries</p>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- CONTACT FORM -->
+        <div class="contact-form-box">
+          <h3 style="font-size:20px;margin-bottom:20px;color:#1a1a2e;border-left:4px solid #c0392b;padding-left:12px;">Send Us a Message</h3>
+          
+          <div id="form-alert" class="alert"></div>
+
+          <form id="contact-form">
+            <div class="form-group">
+              <label for="name">Full Name *</label>
+              <input type="text" id="name" name="name" placeholder="Your full name" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required />
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject *</label>
+              <input type="text" id="subject" name="subject" placeholder="What is this regarding?" required />
+            </div>
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submit-btn">📤 Send Message</button>
+          </form>
+        </div>
+
+        <!-- CONTACT INFO -->
+        <div class="contact-info-box">
+          <h3>Get In Touch</h3>
+
+          <div class="info-item">
+            <span class="icon">📍</span>
+            <div class="text">
+              <h4>Our Address</h4>
+              <p>123 News Street, Media City<br>New York, NY 10001</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="icon">📞</span>
+            <div class="text">
+              <h4>Phone Number</h4>
+              <p>+1 (555) 123-4567<br>Mon - Fri, 9:00am - 6:00pm</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="icon">📧</span>
+            <div class="text">
+              <h4>Email Address</h4>
+              <p>news@dailynews.com<br>tips@dailynews.com</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="icon">🕒</span>
+            <div class="text">
+              <h4>Working Hours</h4>
+              <p>Monday - Friday: 9am - 6pm<br>Saturday: 10am - 4pm</p>
+            </div>
+          </div>
+
+          <div style="margin-top:25px;padding-top:20px;border-top:1px solid #2c2c54;">
+            <h4 style="color:#f39c12;margin-bottom:12px;font-family:Arial;">Follow Us</h4>
+            <div style="display:flex;gap:15px;">
+              <span style="font-size:28px;cursor:pointer;" title="Facebook">📘</span>
+              <span style="font-size:28px;cursor:pointer;" title="Twitter/X">🐦</span>
+              <span style="font-size:28px;cursor:pointer;" title="Instagram">📸</span>
+              <span style="font-size:28px;cursor:pointer;" title="YouTube">▶️</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FAQ SECTION -->
+      <div class="about-section" style="margin-top:30px;">
+        <h2>Frequently Asked Questions</h2>
+        <div style="margin-top:15px;">
+          <details style="margin-bottom:12px;border:1px solid #eee;border-radius:4px;">
+            <summary style="padding:14px;cursor:pointer;font-family:Arial;font-size:14px;font-weight:bold;background:#f8f8f8;">How do I submit a news tip?</summary>
+            <div style="padding:14px;font-size:14px;color:#555;line-height:1.7;">You can submit news tips by emailing tips@dailynews.com or by using the contact form above. Please provide as much detail as possible including location, time, and any photos if available.</div>
+          </details>
+          <details style="margin-bottom:12px;border:1px solid #eee;border-radius:4px;">
+            <summary style="padding:14px;cursor:pointer;font-family:Arial;font-size:14px;font-weight:bold;background:#f8f8f8;">How can I advertise with DailyNews?</summary>
+            <div style="padding:14px;font-size:14px;color:#555;line-height:1.7;">For advertising inquiries, please email us at ads@dailynews.com. We offer various packages including banner ads, sponsored content, and newsletter placements.</div>
+          </details>
+          <details style="margin-bottom:12px;border:1px solid #eee;border-radius:4px;">
+            <summary style="padding:14px;cursor:pointer;font-family:Arial;font-size:14px;font-weight:bold;background:#f8f8f8;">How do I report incorrect information in an article?</summary>
+            <div style="padding:14px;font-size:14px;color:#555;line-height:1.7;">We take accuracy very seriously. If you believe an article contains incorrect information, please contact us immediately at corrections@dailynews.com with the article title and the specific correction needed.</div>
+          </details>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>📰 DailyNews</h4>
+          <p>Your most trusted source for breaking news, analysis, and in-depth reporting from around the world.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/news">News</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Info</h4>
+          <p>📍 123 News Street, Media City</p>
+          <p>📞 +1 (555) 123-4567</p>
+          <p>📧 news@dailynews.com</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 DailyNews. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('current-date').textContent = new Date().toDateString();
+
+    document.getElementById('contact-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const alert = document.getElementById('form-alert');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value
+      };
+
+      try {
+        const res = await fetch('/api/contacts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert.className = 'alert alert-success show';
+          alert.textContent = '✅ ' + data.message + ' We will get back to you soon!';
+          this.reset();
+        } else {
+          throw new Error(data.error);
+        }
+      } catch(err) {
+        alert.className = 'alert alert-error show';
+        alert.textContent = '❌ Error: ' + (err.message || 'Could not send message. Please try again.');
+      }
+
+      btn.textContent = '📤 Send Message';
+      btn.disabled = false;
+
+      setTimeout(() => { alert.classList.remove('show'); }, 5000);
+    });
+  </script>
+</body>
+</html>
